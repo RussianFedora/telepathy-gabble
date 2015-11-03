@@ -1,0 +1,89 @@
+Description: workaround against buggy Cisco jabber server
+ Cisco jabber responds to following stansa:
+ <iq type="set" id="323910323921"><query xmlns="jabber:iq:privacy">
+   <list name="invisible">
+     <item action="deny" order="1"><presence-out/></item>
+   </list>
+ </query></iq>
+ With following reply
+ <iq from='privacy-cm.95-108-178-233' id='323910323921' to='darkk@yandex-team.ru/ya' type='error'>
+   <error type='cancel'><item-not-found xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/></error>
+ </iq>
+ Note bad `from` in the reply stansa.
+ I assume, that it's safe to assume this stana non-spoofed if
+ 1) `id` is not predictable
+ 2) request was sent to server (should_be_from == NULL)
+ 3) connection is TLS-protected -- FIXME
+ .
+ telepathy-gabble (0.18.3-0ubuntu0.1~yndx0) unstable; urgency=medium
+ .
+   * Workaround for cisco server.
+Author: Leonid Evdokimov <leon@darkk.net.ru>
+
+---
+
+Origin: other, https://bugs.freedesktop.org/show_bug.cgi?id=39057
+Bug: https://bugs.freedesktop.org/show_bug.cgi?id=39057
+Forwarded: no
+Last-Update: 2015-08-14
+
+--- telepathy-gabble-0.18.3.orig/lib/ext/wocky/wocky/wocky-c2s-porter.c
++++ telepathy-gabble-0.18.3/lib/ext/wocky/wocky/wocky-c2s-porter.c
+@@ -857,6 +857,9 @@ check_spoofing (WockyC2SPorter *self,
+     {
+       if (stanza_is_from_server (self, nfrom))
+         goto finally;
++      /* that's buggy Cisco jabber */
++      if (/* is_tls(self) && */ g_str_has_prefix(from, "privacy-cm."))
++        goto finally;
+     }
+ 
+   /* If we sent an IQ to the server itself, allow it to
+--- telepathy-gabble-0.18.3.orig/lib/ext/wocky/wocky/wocky-xmpp-connection.c
++++ telepathy-gabble-0.18.3/lib/ext/wocky/wocky/wocky-xmpp-connection.c
+@@ -40,6 +40,8 @@
+ # include <unistd.h>
+ #endif
+ 
++#include <gnutls/gnutls.h>
++#include <gnutls/crypto.h>
+ #include <gio/gio.h>
+ 
+ #include "wocky-signals-marshal.h"
+@@ -91,8 +93,6 @@ struct _WockyXmppConnectionPrivate
+   gsize length;
+ 
+   GSimpleAsyncResult *force_close_result;
+-
+-  guint last_id;
+ };
+ 
+ /**
+@@ -1159,15 +1159,19 @@ wocky_xmpp_connection_reset (WockyXmppCo
+ gchar *
+ wocky_xmpp_connection_new_id (WockyXmppConnection *self)
+ {
+-  WockyXmppConnectionPrivate *priv =
+-    self->priv;
+-  GTimeVal tv;
+-  glong val;
+-
+-  g_get_current_time (&tv);
+-  val = (tv.tv_sec & tv.tv_usec) + priv->last_id++;
++  // Previous version was contatenation of decimal representation of two 64-bit
++  // integers. On the other hand it was effectevly 32-bit integer (timestamp &
++  // usec + last_id_32) + 20-bit integer (usec count).
++  // So it was single 52bit integer, and 64-bit should be enough :)
++  // 8-bytes is converted to 12-char base64 with padding, but 12-char can be
++  // decoded to 9 bytes.
++  guchar binary[9];
++
++  memset(binary, 0, sizeof(binary));
++  // FIXME: is GNUTLS_RND_NONCE enough?
++  gnutls_rnd(GNUTLS_RND_RANDOM, binary, sizeof(binary));
+ 
+-  return g_strdup_printf ("%ld%ld", val, tv.tv_usec);
++  return g_base64_encode(binary, sizeof(binary));
+ }
+ 
+ static void

@@ -15,6 +15,8 @@ URL:            http://telepathy.freedesktop.org/wiki/
 Source0:        http://telepathy.freedesktop.org/releases/%{name}/%{name}-%{version}.tar.gz
 Patch1:         telepathy-gabble-0.18.0-build.patch
 Patch2:         0001-xmpp-console-Explicitly-state-python-in-the-shebang.patch
+# fix connect to Cisco server https://bugs.freedesktop.org/show_bug.cgi?id=39057
+Patch3:         cisco-jabber-workaround.patch
 
 BuildRequires:  dbus-devel >= 1.1.0
 BuildRequires:  dbus-glib-devel >= 0.82
@@ -51,6 +53,7 @@ chats and voice calls.
 %setup -q
 %patch1 -p 1 -b .build
 %patch2 -p 1 -b .shebang
+%patch3 -p 1 -b .cisco
 
 
 %if %{run_tests}
@@ -101,6 +104,9 @@ rm -f $RPM_BUILD_ROOT%{_docdir}/%{name}/*.html
 
 
 %changelog
+* Tue Nov  3 2015 Arkady L. Shane <ashejn@russianfedora.pro> - 0.18.3-1.R
+- fix connection to cisco server (https://bugs.freedesktop.org/show_bug.cgi?id=39057)
+
 * Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.18.2-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
