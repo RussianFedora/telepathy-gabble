@@ -104,7 +104,7 @@ rm -f $RPM_BUILD_ROOT%{_docdir}/%{name}/*.html
 
 
 %changelog
-* Tue Nov  3 2015 Arkady L. Shane <ashejn@russianfedora.pro> - 0.18.3-1.R
+* Tue Nov  3 2015 Arkady L. Shane <ashejn@russianfedora.pro> - 0.18.2-5.R
 - fix connection to cisco server (https://bugs.freedesktop.org/show_bug.cgi?id=39057)
 
 * Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.18.2-5
