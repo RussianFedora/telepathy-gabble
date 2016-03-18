@@ -6,7 +6,7 @@
 
 Name:           telepathy-gabble
 Version:        0.18.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A Jabber/XMPP connection manager
 
 Group:          Applications/Communications
@@ -104,6 +104,9 @@ rm -f $RPM_BUILD_ROOT%{_docdir}/%{name}/*.html
 
 
 %changelog
+* Fri Mar 18 2016 Arkady L. Shane <ashejn@russianfedora.pro> - 0.18.2-6.R
+- bump release to rebuild
+
 * Tue Nov  3 2015 Arkady L. Shane <ashejn@russianfedora.pro> - 0.18.2-5.R
 - fix connection to cisco server (https://bugs.freedesktop.org/show_bug.cgi?id=39057)
 
