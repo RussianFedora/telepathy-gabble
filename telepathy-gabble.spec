@@ -5,8 +5,8 @@
 %endif
 
 Name:           telepathy-gabble
-Version:        0.18.2
-Release:        6%{?dist}
+Version:        0.18.4
+Release:        1%{?dist}
 Summary:        A Jabber/XMPP connection manager
 
 Group:          Applications/Communications
@@ -104,6 +104,9 @@ rm -f $RPM_BUILD_ROOT%{_docdir}/%{name}/*.html
 
 
 %changelog
+* Thu Dec  1 2016 Arkady L. Shane <ashejn@russianfedora.pro> - 0.18.4-1.R
+- update to 0.18.4
+
 * Fri Mar 18 2016 Arkady L. Shane <ashejn@russianfedora.pro> - 0.18.2-6.R
 - bump release to rebuild
 
