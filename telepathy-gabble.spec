@@ -31,10 +31,10 @@ BuildRequires:  cyrus-sasl-devel
 BuildRequires:  libxslt
 %if %{run_tests}
 # Build Requires needed for tests.
-BuildRequires:  python3-devel
-BuildRequires:  python3-twisted
-BuildRequires:  python3-dbus
-BuildRequires:  python3-gobject
+BuildRequires:  python-devel
+BuildRequires:  python-twisted
+BuildRequires:  python-dbus
+BuildRequires:  python-gobject
 %endif
 
 Requires:       telepathy-mission-control >= 5.5.0
@@ -54,7 +54,6 @@ chats and voice calls.
 %patch1 -p 1 -b .build
 %patch2 -p 1 -b .shebang
 %patch3 -p 1 -b .cisco
-
 
 %if %{run_tests}
 %check
