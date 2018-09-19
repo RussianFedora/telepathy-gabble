@@ -6,7 +6,7 @@
 
 Name:           telepathy-gabble
 Version:        0.18.4
-Release:        6%{?dist}.R
+Release:        9%{?dist}.R
 Summary:        A Jabber/XMPP connection manager
 
 Group:          Applications/Communications
@@ -31,10 +31,10 @@ BuildRequires:  cyrus-sasl-devel
 BuildRequires:  libxslt
 %if %{run_tests}
 # Build Requires needed for tests.
-BuildRequires:  python
-BuildRequires:  python-twisted
-BuildRequires:  dbus-python
-BuildRequires:  pygobject2
+BuildRequires:  python3-devel
+BuildRequires:  python3-twisted
+BuildRequires:  python3-dbus
+BuildRequires:  python3-gobject
 %endif
 
 Requires:       telepathy-mission-control >= 5.5.0
@@ -104,6 +104,9 @@ rm -f $RPM_BUILD_ROOT%{_docdir}/%{name}/*.html
 
 
 %changelog
+* Wed Sep 19 2018 Arkady L. Shane <ashejn@russianfedora.pro> - 0.18.4-9.R
+- Run the tests, BR python3 packages
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.18.4-6.R
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
